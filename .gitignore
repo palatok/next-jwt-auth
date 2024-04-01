@@ -1,0 +1,42 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+.idea
+
+# ignore vs code project config files
+.vs
+
+# ignore logs
+logs
+*.log
+
+# ignore 3rd party lib
+node_modules
+package-lock.json
+
+# ignore key
+*.pem
+
+# Ignore built files
+build
+dist
+
+# ignore test converage
+coverage
+
+# Environment varibles
+*.env
+*.env.*
+
+#keys
+keys/*
+!keys/*.md
+!keys/*.example
+
+# Deployment configuration
+deployment-config.conf
+
+#temp
+temp
+.DS_Store
+
+*.save
+*.save.*
