@@ -2,17 +2,46 @@
   "name": "next-jwt-auth",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "prepare": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "nextjs",
+    "jwt",
+    "auth",
+    "typescript"
+  ],
+  "author": "Shakil Ahmed (shakilbuet63@gmail.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/palatok/next-jwt-auth.git"
+  },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.2.55",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "js-cookie": "^3.0.5"
+  },
+  "peerDependencies": {
+    "axios": "^1.6.8",
+    "next": "^14.1.4",
+    "react": ">=16"
   }
 }

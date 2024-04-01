@@ -1,2 +1,3 @@
 # next-jwt-auth
-JWT auth for customer auth service for NextJS project
+
+JWT auth for custome auth service for NextJS project
