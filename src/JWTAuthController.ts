@@ -184,9 +184,9 @@ export class JWTAuthController {
       let response: AxiosResponse<Record<string, any>, any> | null = null;
 
       if (this.config.endpoints.login.method === "post") {
-        response = await axios.post<Record<string, any>>(url, data);
+        response = await this.httpClient.post<Record<string, any>>(url, data);
       } else {
-        response = await axios.get<Record<string, any>>(url, {
+        response = await this.httpClient.get<Record<string, any>>(url, {
           params: data,
         });
       }
