@@ -24,10 +24,11 @@ You need to use `React >=16`. `NextJS` and `Axios` are the two peer dependencies
 
 ```
 npm i next axios
+
 npm i next-jwt-auth
 ```
 
-## Configuration
+## Usage
 
 Let's assume a Login API which will take email/password in the request body and will give the following response,
 
@@ -75,7 +76,7 @@ method: POST
 ```
 
 Now, let's come to the library configuration.  
-Create a typescript file for your `User` type, create a typescript file `src/types/Auth.ts` (it can be anywhere of your choice),
+Create a typescript file `src/types/Auth.ts` (it can be anywhere of your choice) for your `User` type,
 
 ```ts
 import { AuthUser } from "next-jwt-auth";
@@ -215,7 +216,7 @@ export default function AppLayout(props: AppLayoutProps) {
 }
 ```
 
-Now, use the library in your login form component (`src/components/auth/LoginForm.jsx`)
+You are ready to use the library in your login form component (`src/components/auth/LoginForm.jsx`)
 
 ```jsx
 'use client'
@@ -274,7 +275,7 @@ export default function LoginForm() {
 
 ```
 
-Congratulations, now you have a working login page. Now we need to access the currently logged in user information from the library. Let's assume we are displaying the user information in a `Profile` component. (`src/components/user/Profile.jsx`)
+Congratulations ! now you have a working login page. Now we need to access the currently logged in user information from the library. Let's assume we are displaying the user information in a `Profile` component. (`src/components/user/Profile.jsx`)
 
 ```jsx
 import { useJWTAuthContext } from "../../config/Auth";
@@ -344,4 +345,34 @@ const controller = new JWTAuthController(authConfig);
 const response = await controller.getHttpClient().get("<your API endpoint>");
 ```
 
-Apology for the above `controller.getHttpClient()` pattern (I don't like it either), I will try to give more elegant and easy solution in the future releases.
+> Apology for the above `controller.getHttpClient()` pattern (I don't like it either), I will try to give more elegant and easy solution in the future releases.
+
+**Next Auth Middleware**
+
+You can use the `isAuthenticatedRequest()` method to check if the user is authenticated on the Next.js Server side. Here is a sample middleware:
+
+```ts
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import { isAuthenticatedRequest } from "next-jwt-auth";
+
+const publicRoutes = [
+  "/",
+  "/login",
+  "/signup",
+  "/reset",
+  "/success",
+  "/verify",
+];
+
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  const isUnprotectedRoute = publicRoutes.includes(request.nextUrl.pathname);
+
+  if (!isUnprotectedRoute && !isAuthenticatedRequest(request)) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  return NextResponse.next();
+}
+```
