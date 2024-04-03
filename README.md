@@ -29,46 +29,51 @@ npm i next-jwt-auth
 
 Let's assume a Login API which will take email/password in the request body and will give the following response,
 
-```json
+```
 endpoint: https://awesome-api-service.com/auth/signin
 method: POST
-body:
+```
 
+**body:**
+
+```json
 {
-    "email": "customer@awesome.com",
-    "password": "123456"
+  "email": "customer@awesome.com",
+  "password": "123456"
 }
+```
 
-response:
+**response:**
 
+```json
 {
-    "user": {
-        "id": "65d9ce7cefae2dd3c4da3e19",
-        "email": "customer@awesome.com",
-        "phone": "01611223344",
-        "firstName": "Mr.",
-        "lastName": "Customer",
-        "type": "Customer",
-        "active": true,
-        "verified": true,
-        "lock": {
-            "isLocked": false,
-            "loginAttempts": 0
-        }
-    },
-    "access": {
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDljZTdjZWZhZTJkZDNjNGRhM2UxOSIsInR5cGUiOiJDdXN0b21lciIsImFjdGl2ZSI6dHJ1ZSwidmVyaWZpZWQiOnRydWUsImxvY2siOnsiaXNMb2NrZWQiOmZhbHNlLCJsb2dpbkF0dGVtcHRzIjowfSwiaWF0IjoxNzEyMTAwNjU0LCJleHAiOjE3MTIxMDA5NTR9.O80rJIkxEk2uCfviRvQPJwts5H8u-qRRPBCbjqX_oOk",
-        "expiresAt": "2024-04-02T23:35:54.624Z"
-    },
-    "refresh": {
-        "token": "AGrhx3aif0jZLZ3/8gsjbLpjqeFr+CDtkf+qrL1ErdZwufuYSNFUu4i5WsYO4MT+YeWHmM8A2lJa7bbSDeMwkg==",
-        "expiresAt": "2024-04-03T00:00:54.625Z"
+  "user": {
+    "id": "65d9ce7cefae2dd3c4da3e19",
+    "email": "customer@awesome.com",
+    "phone": "01611223344",
+    "firstName": "Mr.",
+    "lastName": "Customer",
+    "type": "Customer",
+    "active": true,
+    "verified": true,
+    "lock": {
+      "isLocked": false,
+      "loginAttempts": 0
     }
+  },
+  "access": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZDljZTdjZWZhZTJkZDNjNGRhM2UxOSIsInR5cGUiOiJDdXN0b21lciIsImFjdGl2ZSI6dHJ1ZSwidmVyaWZpZWQiOnRydWUsImxvY2siOnsiaXNMb2NrZWQiOmZhbHNlLCJsb2dpbkF0dGVtcHRzIjowfSwiaWF0IjoxNzEyMTAwNjU0LCJleHAiOjE3MTIxMDA5NTR9.O80rJIkxEk2uCfviRvQPJwts5H8u-qRRPBCbjqX_oOk",
+    "expiresAt": "2024-04-02T23:35:54.624Z"
+  },
+  "refresh": {
+    "token": "AGrhx3aif0jZLZ3/8gsjbLpjqeFr+CDtkf+qrL1ErdZwufuYSNFUu4i5WsYO4MT+YeWHmM8A2lJa7bbSDeMwkg==",
+    "expiresAt": "2024-04-03T00:00:54.625Z"
+  }
 }
 ```
 
 Now, let's come to the library configuration.  
-Create a type file for your `User` type, create a type file `src/types/Auth.ts` (it can be anywhere of your choice),
+Create a typescript file for your `User` type, create a typescript file `src/types/Auth.ts` (it can be anywhere of your choice),
 
 ```ts
 import { AuthUser } from "next-jwt-auth";
@@ -103,27 +108,37 @@ export const authConfig: JWTAuthConfig = {
   apiBaseUrl: "https://awesome-api-service.com", // or, process.env.API_BASE_URL!
   user: {
     /**
-     * This is the property name in the response where your user object is located
+     * This is the property name in the response
+     * where your user object is located
      */
     property: "user",
   },
   accessToken: {
     /**
-     * This is the property name in the response where your access token string is located
+     * This is the property name in the response
+     * where your access token string is located
      */
     property: "access.token",
     /**
-     * Access token Expiry time is optional. If no expiry time found, then access token will automatically expire when there is an Unathorized response (http status code 401) found from your API service
+     * Access token Expiry time is optional.
+     * If no expiry time found, then access token
+     * will automatically expire when there is an
+     * Unathorized response (http status code 401) found
+     * from your API service
      */
     expireTimeProperty: "access.expiresAt", // optional
   },
   refreshToken: {
     /**
-     * This is the property name in the response where your access token string is located
+     * This is the property name in the response
+     * where your access token string is located
      */
     property: "refresh.token",
     /**
-     * Refresh token Expiry time is optional. If no expiry time found, then refresh token will automatically expire when the library can't get a new access token using the refresh token anymore
+     * Refresh token Expiry time is optional.
+     * If no expiry time found, then refresh token
+     * will automatically expire when the library
+     * can't get a new access token using the refresh token anymore
      */
     expireTimeProperty: "refresh.expiresAt", // optional
   },
@@ -137,7 +152,11 @@ export const authConfig: JWTAuthConfig = {
     user: { url: "/auth/profile", method: "get" },
   },
   /**
-   * This is the NextJS route for your login page. This library will automatically redirect user to this page when user session is expired, i.e refresh token is also expired and user needs to login again
+   * This is the NextJS route for your login page.
+   * This library will automatically redirect
+   * user to this page when user session is expired.
+   *
+   * i.e refresh token is also expired and user needs to login again
    */
   pages: {
     login: { url: "/login" },
@@ -145,14 +164,23 @@ export const authConfig: JWTAuthConfig = {
 };
 
 /**
- * Next, we create the React Context and Context Provider using our own User type. The reason why you need to create the context is because, you need to tell the User type to the library, Otherwise the library cannot infer the User type (will explain later below)
+ * Next, we create the React Context and Context Provider
+ * using our own User type.
+ *
+ * The reason why you need to create the context is because,
+ * you need to tell the User type to the library.
+ *
+ * Otherwise the library cannot infer the User type
+ * (will explain later below)
  */
 export const { JWTAuthContext, JWTAuthProvider } =
   createJWTAuthProvider<LoggedInUser>();
 
 /**
  * (Optional)
- * This is just a custom hook to easily access the JWTAuthContext. You can skip this and use useContext(JWTAuthContext) in your component, but this approach is more clean.
+ * This is just a custom hook to easily access the JWTAuthContext.
+ * You can skip this and use useContext(JWTAuthContext)
+ * in your component, but this approach is more clean.
  */
 export const useJWTAuthContext = () => {
   const context = useContext(JWTAuthContext);
@@ -196,7 +224,8 @@ import { useJWTAuthContext } from '../../config/Auth'
 
 function LoginForm() {
   /**
-   * Here you can use the custom hook to access the library API easily
+   * Here you can use the custom hook
+   * to access the library API easily
    */
   const { loginWithCredentials } = useJWTAuthContext()
 
@@ -255,13 +284,19 @@ export default function Profile() {
    * This 'user' object has the type of `LoggedInUser`
    * which we defined in the src/config/Auth.ts file
    *
-   * We used the factory pattern (createcreateJWTAuthProvider<LoggedInUser>()) to solve this problem. Without the factory pattern our 'user' object will have type of 'AuthUser' which have only {id: string} in it.
+   * We used the factory pattern
+   * (createcreateJWTAuthProvider<LoggedInUser>()) to solve this problem.
+   *
+   * Without the factory pattern our 'user' object
+   * will have the type of 'AuthUser'
+   * which have only {id: string} in it.
    */
   const { user } = useJWTAuthContext();
 
   if (!user) {
     /**
-     * User can be null, for example after logout we don't have any user object
+     * User can be null. For example,
+     * after logout we don't have any user object
      */
     return null;
   }
@@ -283,7 +318,8 @@ Finally, for logout button, (`src/components/auth/LogoutButton.jsx`)
 import { useJWTAuthContext } from "../../config/Auth";
 
 /**
- * User will be automatically redirected to 'login' page (configured in src/config/Auth.ts) after logout
+ * User will be automatically redirected to 'login' page
+ * (configured in src/config/Auth.ts) after logout
  */
 export default function LogOutButton() {
   const { logout } = useJWTAuthContext();
@@ -308,4 +344,4 @@ const controller = new JWTAuthController(authConfig);
 const response = await controller.getHttpClient().get("<your API endpoint>");
 ```
 
-Apology for the above `HttpClient` pattern (I don't like it either), I will try to give more elegant and easy solution in the future releases.
+Apology for the above `controller.getHttpClient()` pattern (I don't like it either), I will try to give more elegant and easy solution in the future releases.
