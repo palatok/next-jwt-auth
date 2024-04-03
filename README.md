@@ -1,4 +1,6 @@
-# next-jwt-auth
+![NextJWTAuth Logo](assets/next-jwt-auth-logo.png)
+
+<p style="text-align: center; font-weight: bold; font-size: 24px">Next JWT Auth</p>
 
 ## The problem
 
