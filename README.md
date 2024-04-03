@@ -222,7 +222,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useJWTAuthContext } from '../../config/Auth'
 
-function LoginForm() {
+export default function LoginForm() {
   /**
    * Here you can use the custom hook
    * to access the library API easily
@@ -269,8 +269,6 @@ function LoginForm() {
     </div>
   )
 }
-
-export default LoginForm
 
 ```
 
