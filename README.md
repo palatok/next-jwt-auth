@@ -268,7 +268,7 @@ export default function LoginForm() {
           isLoading={isLoading}
           onClick={onSubmit}
         />
-      </form>
+      </div>
     </div>
   )
 }
@@ -334,18 +334,46 @@ export default function LogOutButton() {
 ```
 
 **One important Note:**  
-You should use the axios client from this library to call your APIs, otherwise this library won't detect when your access token gets rejected by your API server. For example, in any file/component where you want to execute your API calls, do this
+You should use the axios client from this library to call your APIs, otherwise this library won't detect when your access token gets rejected by your API server.
+
+When you use the axios client from this library, the client will automatically add 'Authorization' header to your requests. It will also detect when your JWT token expires and will call your Refresh Token API to get a new Authorization token.
+
+For example, let's say you have a custom hook that uses [react-query](https://github.com/TanStack/query) to make a request to your API service, you can use the axios client from this library to make the request like below,
 
 ```ts
-import { authConfig } from "@/config/Auth";
-import { JWTAuthController } from "next-jwt-auth";
+import { useQuery } from "@tanstack/react-query";
+import { useJWTAuthContext } from "../../config/Auth";
 
-const controller = new JWTAuthController(authConfig);
+type EmployeeListFetchParams = {
+  page: number;
+  limit: number;
+  search: string;
+};
 
-const response = await controller.getHttpClient().get("<your API endpoint>");
+type EmployeeItem = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+export const useEmployeeListFetchAPI = (params: EmployeeListFetchParams) => {
+  const { apiClient } = useJWTAuthContext();
+
+  return useQuery({
+    queryKey: ["employee-list", params],
+    async queryFn() {
+      const endpoint = `/user/employee-list`;
+      const { data } = await apiClient().get<EmployeeItem[]>(endpoint, {
+        params,
+      });
+
+      return data;
+    },
+  });
+};
 ```
 
-> Apology for the above `controller.getHttpClient()` pattern (I don't like it either), I will try to give more elegant and easy solution in the future releases.
+> The above `apiClient()` will use the same `apiBaseUrl` that you defined in `src/config/Auth.ts`. If you have different API base URL then just add the full URL to the above `endpoint` variable (example: `const endpoint = 'https://my.another-api-service.com/user/employee-list'`)
 
 **Next Auth Middleware**
 
@@ -375,4 +403,17 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
+};
 ```
