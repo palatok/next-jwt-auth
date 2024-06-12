@@ -79,49 +79,49 @@ Now, let's come to the library configuration.
 Create a typescript file `src/types/Auth.ts` (it can be anywhere of your choice) for your `User` type,
 
 ```ts
-import { AuthUser } from "next-jwt-auth";
+import { AuthUser } from 'next-jwt-auth'
 
 export interface LoggedInUser extends AuthUser {
-  // the id: string property will come from AuthUser type
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  type: "Super Admin" | "Admin" | "Customer";
-  active: boolean;
-  verified: boolean;
-  photo?: string;
+  // the id: string | number property will come from AuthUser type
+  email: string
+  firstName: string
+  lastName: string
+  phone: string
+  type: 'Super Admin' | 'Admin' | 'Customer'
+  active: boolean
+  verified: boolean
+  photo?: string
   lock?: {
-    isLocked: boolean;
-    loginAttempts: number;
-    feedback?: string;
-    lockedAt?: string;
-  };
+    isLocked: boolean
+    loginAttempts: number
+    feedback?: string
+    lockedAt?: string
+  }
 }
 ```
 
 After that, create another file in `src/config/Auth.ts` (again, it can be any file of your choice) and put the following configuration,
 
 ```ts
-import { JWTAuthConfig, createJWTAuthProvider } from "next-jwt-auth";
-import { useContext } from "react";
-import { LoggedInUser } from "../types/Auth";
+import { JWTAuthConfig, createJWTAuthProvider } from 'next-jwt-auth'
+import { useContext } from 'react'
+import { LoggedInUser } from '../types/Auth'
 
 export const authConfig: JWTAuthConfig = {
-  apiBaseUrl: "https://awesome-api-service.com", // or, process.env.API_BASE_URL!
+  apiBaseUrl: 'https://awesome-api-service.com', // or, process.env.API_BASE_URL!
   user: {
     /**
      * This is the property name in the response
      * where your user object is located
      */
-    property: "user",
+    property: 'user',
   },
   accessToken: {
     /**
      * This is the property name in the response
      * where your access token string is located
      */
-    property: "access.token",
+    property: 'access.token',
     /**
      * Access token Expiry time is optional.
      * If no expiry time found, then access token
@@ -129,30 +129,41 @@ export const authConfig: JWTAuthConfig = {
      * Unathorized response (http status code 401) found
      * from your API service
      */
-    expireTimeProperty: "access.expiresAt", // optional
+    expireTimeProperty: 'access.expiresAt', // optional
   },
+  /**
+   * Refresh token configuration is optional.
+   * You can skip it if your backend API only gives access token in login response.
+   * If refresh token configuration is undefined then
+   * this library won't try to call refresh token API
+   * and will automatically logout the user once the access token is expired
+   */
   refreshToken: {
     /**
      * This is the property name in the response
      * where your access token string is located
      */
-    property: "refresh.token",
+    property: 'refresh.token',
     /**
      * Refresh token Expiry time is optional.
      * If no expiry time found, then refresh token
      * will automatically expire when the library
      * can't get a new access token using the refresh token anymore
      */
-    expireTimeProperty: "refresh.expiresAt", // optional
+    expireTimeProperty: 'refresh.expiresAt', // optional
   },
   /**
    * Here are the API endpoints that your custom Auth service exposes
    */
   endpoints: {
-    login: { url: "/auth/signin", method: "post" },
-    logout: { url: "/auth/signout", method: "post" },
-    refresh: { url: "/auth/refresh-token", method: "post" },
-    user: { url: "/auth/profile", method: "get" },
+    login: { url: '/auth/signin', method: 'post' },
+    logout: { url: '/auth/signout', method: 'post' },
+    /**
+     * (Optional)
+     * You can skip 'refresh' property if your backend has no token refreshing mechanism
+     */
+    refresh: { url: '/auth/refresh-token', method: 'post' },
+    user: { url: '/auth/profile', method: 'get' },
   },
   /**
    * This is the NextJS route for your login page.
@@ -162,9 +173,16 @@ export const authConfig: JWTAuthConfig = {
    * i.e refresh token is also expired and user needs to login again
    */
   pages: {
-    login: { url: "/login" },
+    login: { url: '/login' },
   },
-};
+
+  /**
+   * (Optiona)
+   * This is the HTTP status code which is returned by the server whenever the access token is expired
+   * Default is: 401
+   */
+  unauthorizedStatusCode: 401,
+}
 
 /**
  * Next, we create the React Context and Context Provider
@@ -176,8 +194,7 @@ export const authConfig: JWTAuthConfig = {
  * Otherwise the library cannot infer the User type
  * (will explain later below)
  */
-export const { JWTAuthContext, JWTAuthProvider } =
-  createJWTAuthProvider<LoggedInUser>();
+export const { JWTAuthContext, JWTAuthProvider } = createJWTAuthProvider<LoggedInUser>()
 
 /**
  * (Optional)
@@ -186,33 +203,33 @@ export const { JWTAuthContext, JWTAuthProvider } =
  * in your component, but this approach is more clean.
  */
 export const useJWTAuthContext = () => {
-  const context = useContext(JWTAuthContext);
+  const context = useContext(JWTAuthContext)
 
   if (!context) {
-    throw new Error("JWTAuthContext not found, please check the provider");
+    throw new Error('JWTAuthContext not found, please check the provider')
   }
 
-  return context;
-};
+  return context
+}
 ```
 
 Now, add the `JWTAuthProvider` in you React layout component (`src/components/layout/AppLayout.jsx`),
 
 ```jsx
-"use client";
+'use client'
 
-import { JWTAuthProvider, authConfig } from "../../config/Auth";
+import { JWTAuthProvider, authConfig } from '../../config/Auth'
 
 type AppLayoutProps = {
   children: React.ReactNode,
-};
+}
 
 export default function AppLayout(props: AppLayoutProps) {
   return (
     <JWTAuthProvider config={authConfig}>
       <div>{props.children}</div>
     </JWTAuthProvider>
-  );
+  )
 }
 ```
 
@@ -278,7 +295,7 @@ export default function LoginForm() {
 Congratulations ! now you have a working login page. Now we need to access the currently logged in user information from the library. Let's assume we are displaying the user information in a `Profile` component. (`src/components/user/Profile.jsx`)
 
 ```jsx
-import { useJWTAuthContext } from "../../config/Auth";
+import { useJWTAuthContext } from '../../config/Auth'
 
 export default function Profile() {
   /**
@@ -292,14 +309,14 @@ export default function Profile() {
    * will have the type of 'AuthUser'
    * which have only {id: string} in it.
    */
-  const { user } = useJWTAuthContext();
+  const { user } = useJWTAuthContext()
 
   if (!user) {
     /**
      * User can be null. For example,
      * after logout we don't have any user object
      */
-    return null;
+    return null
   }
 
   return (
@@ -307,29 +324,29 @@ export default function Profile() {
       <span>{user.firstName}</span>
       <span>{user.lastName}</span>
     </div>
-  );
+  )
 }
 ```
 
 Finally, for logout button, (`src/components/auth/LogoutButton.jsx`)
 
 ```jsx
-"use client";
+'use client'
 
-import { useJWTAuthContext } from "../../config/Auth";
+import { useJWTAuthContext } from '../../config/Auth'
 
 /**
  * User will be automatically redirected to 'login' page
  * (configured in src/config/Auth.ts) after logout
  */
 export default function LogOutButton() {
-  const { logout } = useJWTAuthContext();
+  const { logout } = useJWTAuthContext()
 
   return (
     <button onClick={() => logout()}>
       <span>LogOut</span>
     </button>
-  );
+  )
 }
 ```
 
@@ -341,36 +358,36 @@ When you use the axios client from this library, the client will automatically a
 For example, let's say you have a custom hook that uses [react-query](https://github.com/TanStack/query) to make a request to your API service, you can use the axios client from this library to make the request like below,
 
 ```ts
-import { useQuery } from "@tanstack/react-query";
-import { useJWTAuthContext } from "../../config/Auth";
+import { useQuery } from '@tanstack/react-query'
+import { useJWTAuthContext } from '../../config/Auth'
 
 type EmployeeListFetchParams = {
-  page: number;
-  limit: number;
-  search: string;
-};
+  page: number
+  limit: number
+  search: string
+}
 
 type EmployeeItem = {
-  id: number;
-  name: string;
-  email: string;
-};
+  id: number
+  name: string
+  email: string
+}
 
 export const useEmployeeListFetchAPI = (params: EmployeeListFetchParams) => {
-  const { apiClient } = useJWTAuthContext();
+  const { apiClient } = useJWTAuthContext()
 
   return useQuery({
-    queryKey: ["employee-list", params],
+    queryKey: ['employee-list', params],
     async queryFn() {
-      const endpoint = `/user/employee-list`;
+      const endpoint = `/user/employee-list`
       const { data } = await apiClient().get<EmployeeItem[]>(endpoint, {
         params,
-      });
+      })
 
-      return data;
+      return data
     },
-  });
-};
+  })
+}
 ```
 
 > The above `apiClient()` will use the same `apiBaseUrl` that you defined in `src/config/Auth.ts`. If you have different API base URL then just add the full URL to the above `endpoint` variable (example: `const endpoint = 'https://my.another-api-service.com/user/employee-list'`)
@@ -380,28 +397,21 @@ export const useEmployeeListFetchAPI = (params: EmployeeListFetchParams) => {
 You can use the `isAuthenticatedRequest()` method to check if the user is authenticated on the Next.js Server side. Here is a sample middleware:
 
 ```ts
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
-import { isAuthenticatedRequest } from "next-jwt-auth";
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import { isAuthenticatedRequest } from 'next-jwt-auth'
 
-const publicRoutes = [
-  "/",
-  "/login",
-  "/signup",
-  "/reset",
-  "/success",
-  "/verify",
-];
+const publicRoutes = ['/', '/login', '/signup', '/reset', '/success', '/verify']
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const isUnprotectedRoute = publicRoutes.includes(request.nextUrl.pathname);
+  const isUnprotectedRoute = publicRoutes.includes(request.nextUrl.pathname)
 
   if (!isUnprotectedRoute && !isAuthenticatedRequest(request)) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
@@ -413,7 +423,7 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-};
+}
 ```

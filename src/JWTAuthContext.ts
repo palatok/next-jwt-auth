@@ -25,7 +25,7 @@ export type JWTAuthConfig = {
   endpoints: {
     login: APIEndpoint
     logout: APIEndpoint
-    refresh: APIEndpoint
+    refresh?: APIEndpoint
     user: APIEndpoint
   }
   pages: {

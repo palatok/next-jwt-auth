@@ -209,6 +209,10 @@ export class JWTAuthController {
   }
 
   async refreshAccessToken() {
+    if (this.config.endpoints.refresh === undefined) {
+      throw new Error('Refresh token not found')
+    }
+
     this.setAuthStateLoading(true)
 
     const refreshToken = this.getRefreshToken()
