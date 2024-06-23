@@ -163,6 +163,10 @@ export const authConfig: JWTAuthConfig = {
      * You can skip 'refresh' property if your backend has no token refreshing mechanism
      */
     refresh: { url: '/auth/refresh-token', method: 'post' },
+    /**
+     * (Optional)
+     * You can skip 'refresh' property if your backend has no user profile fetch API
+     */
     user: { url: '/auth/profile', method: 'get' },
   },
   /**
@@ -177,11 +181,23 @@ export const authConfig: JWTAuthConfig = {
   },
 
   /**
-   * (Optiona)
+   * (Optional)
    * This is the HTTP status code which is returned by the server whenever the access token is expired
    * Default is: 401
    */
   unauthorizedStatusCode: 401,
+
+  /**
+   * (Optional)
+   * User profile fetch API call interval in millisecond.
+   * For example: If this interval is set to 5000,
+   * then this library will call the user profile fetch API after every 5000 milliseconds.
+   *
+   * This API call will be used to determine if the access token is still valid.
+   * If the access token is expired, then the server will return an unauthorized
+   * response and this library will logout the user from the app.
+   */
+  userFetchIntervalMS: 1000,
 }
 
 /**

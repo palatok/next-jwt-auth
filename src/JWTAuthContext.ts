@@ -26,12 +26,13 @@ export type JWTAuthConfig = {
     login: APIEndpoint
     logout: APIEndpoint
     refresh?: APIEndpoint
-    user: APIEndpoint
+    user?: APIEndpoint
   }
   pages: {
     login: AppEndpoint
   }
   unauthorizedStatusCode?: number
+  userFetchIntervalMS?: number
 }
 
 export interface AuthUser {

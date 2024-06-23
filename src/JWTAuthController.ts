@@ -193,6 +193,10 @@ export class JWTAuthController {
   }
 
   async fetchUserProfile<T extends AuthUser>() {
+    if (!this.config.endpoints.user) {
+      throw new Error('Trying to fetch user profile without API endpoint config')
+    }
+
     this.setAuthStateLoading(true)
 
     const url = this.config.endpoints.user.url
