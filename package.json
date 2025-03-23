@@ -1,6 +1,6 @@
 {
   "name": "@ahmad-mtr/next-jwt-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A fork of next-jwt-auth that works with Next.js 15",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
