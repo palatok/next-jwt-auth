@@ -77,7 +77,7 @@ export function createJWTAuthProvider<UserProps extends AuthUser = AuthUser>() {
     }
 
     const fetchUser = async () => {
-      if (props.config.endpoints.user === undefined) {
+      if (props.config.endpoints.user === undefined || controller.getRefreshToken() === undefined) {
         return
       }
 
