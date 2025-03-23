@@ -2,6 +2,9 @@
 
 # Next JWT Auth
 
+> [!NOTE]
+> This is a fork of the `next-jwt-auth` package, i've published it as a package only to be used within a project, this version is compatible with Next.js 15
+
 ## The problem
 
 In many application the frontend and backend are two separate application. Your JWT authentication service may be written in different language/framework and hosted somewhere else. You just want to call the auth service APIs from your NextJS app and manage JWT tokens.
@@ -20,19 +23,19 @@ This library will also automatically logout users when the refresh token also ge
 
 ## Dependecies
 
-You need to use `React >=16`. `NextJS` and `Axios` are the two peer dependencies. You need install `next^14.1.4` and `axios^1.6.8` first.
+You need to use `React >=16`. `NextJS` and `Axios` are the two peer dependencies. You need install `next` and `axios^1.6.8` first.
 
-```
+```sh
 npm i next axios
 
-npm i next-jwt-auth
+npm i @ahmad-mtr/next-jwt-auth
 ```
 
 ## Usage
 
 Let's assume a Login API which will take email/password in the request body and will give the following response,
 
-```
+```js
 endpoint: https://awesome-api-service.com/auth/signin
 method: POST
 ```
