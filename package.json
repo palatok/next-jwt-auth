@@ -1,7 +1,7 @@
 {
   "name": "next-jwt-auth",
   "version": "1.2.2",
-  "description": "",
+  "description": "Easily integrate your custom JWT auth service in NextJS app",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
@@ -9,7 +9,10 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc",
     "build:cjs": "tsc --module commonjs --outDir dist/cjs",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "release:patch": "npm version patch && npm run prepare && npm publish",
+    "release:minor": "npm version minor && npm run prepare && npm publish",
+    "release:major": "npm version major && npm run prepare && npm publish"
   },
   "files": [
     "dist",

@@ -108,7 +108,7 @@ import { useContext } from 'react'
 import { LoggedInUser } from '../types/Auth'
 
 export const authConfig: JWTAuthConfig = {
-  apiBaseUrl: 'https://awesome-api-service.com', // or, process.env.API_BASE_URL!
+  apiBaseUrl: 'https://awesome-api-service.com', // or, process.env.NEXT_PUBLIC_API_BASE_URL!
   user: {
     /**
      * This is the property name in the response
