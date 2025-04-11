@@ -270,7 +270,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
-  const onSubmit = () => {
+  const onSubmit = async () => {
     try {
       setIsLoading(true) // show loading animation to user
 
