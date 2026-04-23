@@ -17,6 +17,12 @@ type TokenPropertyDescriptor = ResponsePropertyDescriptor & {
   expireTimeProperty?: string
 }
 
+export type CookiePaths = {
+  authUser: string
+  accessToken: string
+  refreshToken: string
+}
+
 export type JWTAuthConfig = {
   apiBaseUrl: string
   accessToken: TokenPropertyDescriptor
@@ -33,6 +39,7 @@ export type JWTAuthConfig = {
   }
   unauthorizedStatusCode?: number
   userFetchIntervalMS?: number
+  cookieKeys?: CookiePaths
 }
 
 export interface AuthUser {
