@@ -102,7 +102,7 @@ export interface LoggedInUser extends AuthUser {
 
 After that, create another file in `src/config/Auth.ts` (again, it can be any file of your choice) and put the following configuration,
 
-```ts
+````ts
 import { JWTAuthConfig, createJWTAuthProvider } from 'next-jwt-auth'
 import { useContext } from 'react'
 import { LoggedInUser } from '../types/Auth'
@@ -198,6 +198,45 @@ export const authConfig: JWTAuthConfig = {
    * response and this library will logout the user from the app.
    */
   userFetchIntervalMS: 1000,
+  /**
+   * (Optional) Customize the cookie keys used to store and retrieve auth data.
+   *
+   * These keys act as the identifiers when reading from or writing to cookies.
+   * If not provided, the following defaults are used:
+   *
+   * @default
+   * ```
+   * authUser:     'authUser'
+   * accessToken:  'accessToken'
+   * refreshToken: 'refreshToken'
+   * ```
+   *
+   * @example
+   * // Override only the keys you want to change
+   * cookieKeys: {
+   *   authUser: 'my_user',
+   *   accessToken: 'my_access_token',
+   *   refreshToken: 'my_refresh_token',
+   * }
+   */
+  cookieKeys: {
+    /**
+     * Key used to reference the authenticated user object stored in cookies.
+     */
+    authUser: 'authUser',
+
+    /**
+     * Key used to reference the access token stored in cookies.
+     * Use this key to retrieve the JWT access token for authenticated API requests.
+     */
+    accessToken: 'accessToken',
+
+    /**
+     * Key used to reference the refresh token stored in cookies.
+     * Use this key to retrieve the refresh token when obtaining a new access token.
+     */
+    refreshToken: 'refreshToken',
+  },
 }
 
 /**
@@ -227,7 +266,7 @@ export const useJWTAuthContext = () => {
 
   return context
 }
-```
+````
 
 Now, add the `JWTAuthProvider` in you React layout component (`src/components/layout/AppLayout.jsx`),
 
