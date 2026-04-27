@@ -51,6 +51,12 @@ export type TokenData = {
   expiresAt: string
 }
 
+export const defaultCookiePath: CookiePaths = {
+  authUser: 'authUser',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+}
+
 export type JWTAuthContextValue<UserProps extends AuthUser = AuthUser> = {
   controller: JWTAuthController
   isLoggedIn: boolean | null

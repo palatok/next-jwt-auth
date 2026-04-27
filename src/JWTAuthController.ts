@@ -1,8 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 import { getPropByKeyPath } from './Helper'
-import { AuthUser, CookiePaths, JWTAuthConfig } from './JWTAuthContext'
-import { TOKEN, AUTH_USER, REFRESH } from './config'
+import { AuthUser, CookiePaths, defaultCookiePath, JWTAuthConfig } from './JWTAuthContext'
 
 export type LoginResponse<T extends AuthUser> = {
   user: T
@@ -26,11 +25,7 @@ export class JWTAuthController {
 
     this.httpClient.interceptors.request.use(this.onRequestProcess.bind(this), error => Promise.reject(error))
     this.httpClient.interceptors.response.use(response => response, this.onResponseError.bind(this))
-    this.cookiePaths = {
-      authUser: config.cookieKeys?.authUser ?? AUTH_USER,
-      accessToken: config.cookieKeys?.accessToken ?? TOKEN,
-      refreshToken: config.cookieKeys?.refreshToken ?? REFRESH,
-    }
+    this.cookiePaths = config.cookieKeys ?? defaultCookiePath
   }
 
   getHttpClient() {

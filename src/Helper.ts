@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { CookiePaths } from './JWTAuthContext'
+import { CookiePaths, defaultCookiePath } from './JWTAuthContext'
 
 export const getPropByKeyPath = <T>(
   object: Record<string, any>,
@@ -22,11 +22,7 @@ type AuthenticatedRequestCheckOptions = {
 export const isAuthenticatedRequest = (req: NextRequest, options?: AuthenticatedRequestCheckOptions) => {
   const defaultOptions: Required<AuthenticatedRequestCheckOptions> = {
     checkForRefreshToken: false,
-    cookiePaths: options?.cookiePaths ?? {
-      authUser: 'authUser',
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-    },
+    cookiePaths: options?.cookiePaths ?? defaultCookiePath,
   }
   const shouldCheckForRefreshToken = options?.checkForRefreshToken ?? defaultOptions.checkForRefreshToken
 

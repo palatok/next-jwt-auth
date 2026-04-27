@@ -212,7 +212,7 @@ export const authConfig: JWTAuthConfig = {
    * ```
    *
    * @example
-   * // Override only the keys you want to change
+   * // Override all the keys assuming you want to change the cookie keys, otherwise the default cookie keys would be used
    * cookieKeys: {
    *   authUser: 'my_user',
    *   accessToken: 'my_access_token',

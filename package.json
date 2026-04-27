@@ -45,7 +45,7 @@
   "peerDependencies": {
     "axios": "^1.6.8",
     "next": "^16.2.4",
-    "react": ">=16"
+    "react": ">=18"
   },
   "overrides": {
     "postcss": "^8.5.10"
