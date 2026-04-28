@@ -1,13 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import Cookies from 'js-cookie'
 import { getPropByKeyPath } from './Helper'
-import { AuthUser, JWTAuthConfig } from './JWTAuthContext'
-
-export const cookiePaths = {
-  AUTH_USER: 'auth.user',
-  ACCESS_TOKEN: 'auth.access_token',
-  REFRESH_TOKEN: 'auth.refresh_token',
-} as const
+import { AuthUser, CookiePaths, defaultCookiePath, JWTAuthConfig } from './JWTAuthContext'
 
 export type LoginResponse<T extends AuthUser> = {
   user: T
@@ -18,6 +12,7 @@ export type LoginResponse<T extends AuthUser> = {
 export class JWTAuthController {
   private httpClient: AxiosInstance
   private isLoading: boolean = false
+  private cookiePaths: CookiePaths
 
   constructor(private config: JWTAuthConfig) {
     this.httpClient = axios.create({
@@ -30,6 +25,7 @@ export class JWTAuthController {
 
     this.httpClient.interceptors.request.use(this.onRequestProcess.bind(this), error => Promise.reject(error))
     this.httpClient.interceptors.response.use(response => response, this.onResponseError.bind(this))
+    this.cookiePaths = config.cookieKeys ?? defaultCookiePath
   }
 
   getHttpClient() {
@@ -37,11 +33,11 @@ export class JWTAuthController {
   }
 
   getAccessToken() {
-    return Cookies.get(cookiePaths.ACCESS_TOKEN)
+    return Cookies.get(this.cookiePaths.accessToken)
   }
 
   getRefreshToken() {
-    return Cookies.get(cookiePaths.REFRESH_TOKEN)
+    return Cookies.get(this.cookiePaths.refreshToken)
   }
 
   isAuthStateLoading() {
@@ -117,7 +113,7 @@ export class JWTAuthController {
       throw new Error('Unexpected response from API, please recheck')
     }
 
-    Cookies.set(cookiePaths.AUTH_USER, JSON.stringify(user))
+    Cookies.set(this.cookiePaths.authUser, JSON.stringify(user))
 
     this.onTokenPairUpdated(response)
 
@@ -144,12 +140,12 @@ export class JWTAuthController {
       throw new Error('Token not found in response')
     }
 
-    Cookies.set(cookiePaths.ACCESS_TOKEN, accessToken, {
+    Cookies.set(this.cookiePaths.accessToken, accessToken, {
       expires: accessTokenExpiresAt ? new Date(accessTokenExpiresAt) : undefined,
     })
 
     if (refreshToken) {
-      Cookies.set(cookiePaths.REFRESH_TOKEN, refreshToken, {
+      Cookies.set(this.cookiePaths.refreshToken, refreshToken, {
         expires: refreshTokenExpiresAt ? new Date(refreshTokenExpiresAt) : undefined,
       })
     }
@@ -187,9 +183,9 @@ export class JWTAuthController {
   }
 
   onLogoutRequestComplete() {
-    Cookies.remove(cookiePaths.AUTH_USER)
-    Cookies.remove(cookiePaths.ACCESS_TOKEN)
-    Cookies.remove(cookiePaths.REFRESH_TOKEN)
+    Cookies.remove(this.cookiePaths.authUser)
+    Cookies.remove(this.cookiePaths.accessToken)
+    Cookies.remove(this.cookiePaths.refreshToken)
   }
 
   async fetchUserProfile<T extends AuthUser>() {

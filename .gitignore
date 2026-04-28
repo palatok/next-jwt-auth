@@ -3,6 +3,7 @@
 
 # ignore vs code project config files
 .vs
+.vscode
 
 # ignore logs
 logs
